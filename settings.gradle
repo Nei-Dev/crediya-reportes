@@ -28,3 +28,5 @@ include ':reactive-web'
 project(':reactive-web').projectDir = file('./infrastructure/entry-points/reactive-web')
 include ':token-service'
 project(':token-service').projectDir = file('./infrastructure/driven-adapters/token-service')
+include ':sqs-listener'
+project(':sqs-listener').projectDir = file('./infrastructure/entry-points/sqs-listener')

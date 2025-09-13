@@ -1,5 +1,5 @@
 server:
-  port: ${APP_PORT:8080}
+  port: "${APP_PORT:8080}"
 spring:
   application:
     name: "report"
@@ -27,3 +27,15 @@ app:
       summary: "/api/v1/report"
 jwt:
   secret: "${JWT_SECRET}"
+logging:
+  level:
+    com.crediya: "${LOG_LEVEL:INFO}"
+entrypoint:
+  sqs:
+    credit-approved:
+      region: ${SQS_APPROVED_REPORT_REGION}
+      queueUrl: ${SQS_APPROVED_REPORT_QUEUE_URL}
+      waitTimeSeconds: 20
+      maxNumberOfMessages: 10
+      visibilityTimeoutSeconds: 10
+      numberOfThreads: 1

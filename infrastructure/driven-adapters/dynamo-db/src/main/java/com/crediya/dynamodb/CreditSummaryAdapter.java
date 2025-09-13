@@ -37,9 +37,9 @@ public class CreditSummaryAdapter implements CreditSummaryRepository {
 	@Override
 	public Mono<CreditSummary> find() {
 		return Mono.from(creditSummaryTable.scan(r -> r.limit(1)))
+			.doOnSubscribe(subs -> log.trace("Finding Credit summary"))
 			.flatMap(page -> Mono.justOrEmpty(page.items().stream().findFirst()))
 			.map(CreditSummaryMapper.INSTANCE::toDomain)
-			.doOnSubscribe(subs -> log.trace("Finding Credit summary"))
 			.doOnSuccess(found -> {
 				if (found != null) log.info("Credit summary found with id: {}", found.getId());
 			});
