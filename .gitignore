@@ -337,4 +337,6 @@ build-cache
 
 .env
 
+dynamodb_data
+
 .github/

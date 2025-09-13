@@ -27,11 +27,11 @@ public class CreditSummaryAdapter implements CreditSummaryRepository {
 	@Override
 	public Mono<CreditSummary> save(CreditSummary creditSummary) {
 		return Mono.fromCallable(() -> CreditSummaryMapper.INSTANCE.toData(creditSummary))
-				.doOnSubscribe(subs -> log.trace("Saving CreditSummary: {}", creditSummary))
+				.doOnSubscribe(subs -> log.trace("Saving Credit summary: {}", creditSummary))
 				.flatMap(data -> Mono.fromFuture(creditSummaryTable.putItem(data))
 						.thenReturn(data))
 				.map(CreditSummaryMapper.INSTANCE::toDomain)
-				.doOnSuccess(saved -> log.info("CreditSummary saved with id: {}", saved.getId()));
+				.doOnSuccess(saved -> log.info("Credit summary saved with id: {}", saved.getId()));
 	}
 	
 	@Override
@@ -39,9 +39,9 @@ public class CreditSummaryAdapter implements CreditSummaryRepository {
 		return Mono.from(creditSummaryTable.scan(r -> r.limit(1)))
 			.flatMap(page -> Mono.justOrEmpty(page.items().stream().findFirst()))
 			.map(CreditSummaryMapper.INSTANCE::toDomain)
-			.doOnSubscribe(subs -> log.trace("Finding CreditSummary"))
+			.doOnSubscribe(subs -> log.trace("Finding Credit summary"))
 			.doOnSuccess(found -> {
-				if (found != null) log.info("CreditSummary found with id: {}", found.getId());
+				if (found != null) log.info("Credit summary found with id: {}", found.getId());
 			});
 	}
 }
