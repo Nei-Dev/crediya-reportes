@@ -4,5 +4,5 @@ import java.math.BigDecimal;
 
 public record CreditSummaryResponse(
 	Long totalApprovedCredits,
-	BigDecimal totalApprovedAmount
+	BigDecimal totalAmountApproved
 ) {}

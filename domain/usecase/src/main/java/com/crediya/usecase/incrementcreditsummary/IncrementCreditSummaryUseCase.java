@@ -18,10 +18,10 @@ public class IncrementCreditSummaryUseCase implements IIncrementCreditSummaryUse
 	public Mono<Void> execute(BigDecimal amount) {
 		return this.validateAmount(amount)
 			.flatMap(validatedAmount -> creditSummaryRepository.find()
-				.switchIfEmpty(creditSummaryRepository.save(CreditSummary.builder()
+				.switchIfEmpty(Mono.just(CreditSummary.builder()
 					.id(String.valueOf(UUID.randomUUID()))
-					.totalApprovedCredits(1L)
-					.totalAmountApproved(amount)
+					.totalApprovedCredits(0L)
+					.totalAmountApproved(BigDecimal.ZERO)
 					.build()))
 				.flatMap(creditSummary -> {
 					creditSummary.increment(amount);

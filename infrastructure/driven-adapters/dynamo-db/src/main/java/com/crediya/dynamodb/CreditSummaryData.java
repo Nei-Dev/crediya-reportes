@@ -17,6 +17,7 @@ public class CreditSummaryData {
     public CreditSummaryData() {
     }
     
+    @SuppressWarnings("unused")
     public CreditSummaryData(String id, Long totalApprovedCredits, BigDecimal totalAmountApproved) {
         this.id = id;
         this.totalApprovedCredits = totalApprovedCredits;
@@ -49,5 +50,10 @@ public class CreditSummaryData {
     
     public void setTotalAmountApproved(BigDecimal totalAmountApproved) {
         this.totalAmountApproved = totalAmountApproved;
+    }
+    
+    @Override
+    public String toString() {
+        return "CreditSummaryData{" + "id='" + id + '\'' + ", totalApprovedCredits=" + totalApprovedCredits + ", totalAmountApproved=" + totalAmountApproved + '}';
     }
 }

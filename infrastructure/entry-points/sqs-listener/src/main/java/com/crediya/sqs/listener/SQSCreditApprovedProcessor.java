@@ -13,7 +13,7 @@ import java.util.function.Function;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class SQSProcessor implements Function<Message, Mono<Void>> {
+public class SQSCreditApprovedProcessor implements Function<Message, Mono<Void>> {
     
     private final IIncrementCreditSummaryUseCase incrementCreditSummaryUseCase;
     private final Gson gson = new Gson();
@@ -21,7 +21,7 @@ public class SQSProcessor implements Function<Message, Mono<Void>> {
     @Override
     public Mono<Void> apply(Message message) {
         return Mono.fromCallable(() -> gson.fromJson(message.body(), CreditApprovedMessage.class))
-            .flatMap(bodyMessage -> incrementCreditSummaryUseCase.execute(bodyMessage.totalAmount()))
+            .flatMap(bodyMessage -> incrementCreditSummaryUseCase.execute(bodyMessage.amount()))
             .then();
     }
 }

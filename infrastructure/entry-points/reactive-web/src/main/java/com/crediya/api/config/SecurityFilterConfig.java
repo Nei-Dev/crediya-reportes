@@ -30,7 +30,7 @@ import java.util.List;
 
 import static com.crediya.api.constants.ErrorMessage.ACCESS_DENIED;
 import static com.crediya.api.constants.ErrorMessage.UNAUTHORIZED;
-import static org.springframework.http.HttpMethod.POST;
+import static org.springframework.http.HttpMethod.GET;
 
 @Slf4j
 @Configuration
@@ -64,7 +64,7 @@ public class SecurityFilterConfig implements WebFluxConfigurer {
             .formLogin(ServerHttpSecurity.FormLoginSpec::disable)
             .authorizeExchange(authorize -> authorize
                 .pathMatchers(ALLOWED_PATHS_SWAGGER).permitAll()
-                .pathMatchers(POST, path.getSummary()).hasRole(UserRole.ADMIN.name())
+                .pathMatchers(GET, path.getSummary()).hasRole(UserRole.ADMIN.name())
                 .anyExchange().authenticated()
             )
             .exceptionHandling(exceptions -> exceptions
