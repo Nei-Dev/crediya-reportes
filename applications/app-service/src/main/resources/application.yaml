@@ -1,0 +1,12 @@
+server:
+  port: 8083
+spring:
+  application:
+    name: "reportes"
+  devtools:
+    add-properties: false
+aws:
+  dynamodb:
+    region: ${DYNAMODB_REGION}
+    table:
+      credit-summary: ${DYNAMODB_CREDIT_SUMMARY_TABLE}
