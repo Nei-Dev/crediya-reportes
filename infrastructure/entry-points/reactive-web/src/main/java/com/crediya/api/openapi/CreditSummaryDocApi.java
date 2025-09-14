@@ -1,6 +1,6 @@
 package com.crediya.api.openapi;
 
-import com.crediya.api.dto.output.ApiResponse;
+import com.crediya.api.dto.output.CreditSummaryResponse;
 import com.crediya.api.helpers.ApiDocHelper;
 import lombok.experimental.UtilityClass;
 import org.springdoc.core.fn.builders.operation.Builder;
@@ -27,11 +27,11 @@ public class CreditSummaryDocApi {
 				.operationId(OPERATION_ID_GET)
 				.tag(TAG_CREDIT_SUMMARY)
 				.response(responseBuilder()
-					.responseCode(String.valueOf(HttpStatus.CREATED.value()))
+					.responseCode(String.valueOf(HttpStatus.OK.value()))
 					.content(contentBuilder()
 						.mediaType(MediaType.APPLICATION_JSON_VALUE)
 						.schema(schemaBuilder()
-							.implementation(ApiResponse.class)
+							.implementation(CreditSummaryResponse.class)
 						)
 					)
 				)

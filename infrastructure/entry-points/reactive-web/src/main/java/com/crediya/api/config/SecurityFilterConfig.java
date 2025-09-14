@@ -3,7 +3,7 @@ package com.crediya.api.config;
 import com.crediya.api.dto.output.ErrorResponse;
 import com.crediya.api.filters.CorrelationWebFilter;
 import com.crediya.api.helpers.DefaultResponseHelper;
-import com.crediya.model.auth.UserRole;
+import com.crediya.model.auth.UserRoleEnum;
 import com.crediya.model.auth.gateways.TokenService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -64,7 +64,7 @@ public class SecurityFilterConfig implements WebFluxConfigurer {
             .formLogin(ServerHttpSecurity.FormLoginSpec::disable)
             .authorizeExchange(authorize -> authorize
                 .pathMatchers(ALLOWED_PATHS_SWAGGER).permitAll()
-                .pathMatchers(GET, path.getSummary()).hasRole(UserRole.ADMIN.name())
+                .pathMatchers(GET, path.getSummary()).hasRole(UserRoleEnum.ADMIN.name())
                 .anyExchange().authenticated()
             )
             .exceptionHandling(exceptions -> exceptions

@@ -1,8 +1,8 @@
 package com.crediya.tokenservice;
 
-import com.crediya.model.auth.AuthClaims;
+import com.crediya.model.auth.AuthClaimsEnum;
 import com.crediya.model.auth.UserClaims;
-import com.crediya.model.auth.UserRole;
+import com.crediya.model.auth.UserRoleEnum;
 import com.crediya.model.auth.gateways.TokenService;
 import com.crediya.model.exceptions.user.InvalidAuthException;
 import io.jsonwebtoken.Claims;
@@ -33,10 +33,10 @@ public class JwtProviderAdapter implements TokenService {
 		try {
 			Claims claims = getClaimsFromToken(token);
 			return Mono.just(new UserClaims(
-				claims.get(AuthClaims.USER_ID.getValue(), Long.class),
+				claims.get(AuthClaimsEnum.USER_ID.getValue(), Long.class),
 				claims.getSubject(),
-				claims.get(AuthClaims.IDENTIFICATION.getValue(), String.class),
-				UserRole.valueOf(claims.get(AuthClaims.ROLE.getValue(), String.class))
+				claims.get(AuthClaimsEnum.IDENTIFICATION.getValue(), String.class),
+				UserRoleEnum.valueOf(claims.get(AuthClaimsEnum.ROLE.getValue(), String.class))
 			));
 		} catch (Exception ex) {
 			return Mono.error(new InvalidAuthException(TOKEN_INVALID));

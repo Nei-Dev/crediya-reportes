@@ -3,7 +3,7 @@ package com.crediya.model.auth;
 import lombok.Getter;
 
 @Getter
-public enum AuthClaims {
+public enum AuthClaimsEnum {
 	
 	USER_ID("userId"),
 	IDENTIFICATION("identification"),
@@ -11,7 +11,7 @@ public enum AuthClaims {
 	
 	private final String value;
 	
-	AuthClaims(String value) {
+	AuthClaimsEnum(String value) {
 		this.value = value;
 	}
 	
