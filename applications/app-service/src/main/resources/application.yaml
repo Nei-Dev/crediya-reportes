@@ -1,35 +1,35 @@
 server:
-  port: "${APP_PORT:8080}"
+  port: ${APP_PORT:8080}
 spring:
   application:
-    name: "report"
+    name: report
   devtools:
     add-properties: false
 aws:
   dynamodb:
-    region: "${DYNAMODB_REGION}"
+    region: ${DYNAMODB_REGION}
     table:
-      credit-summary: "${DYNAMODB_CREDIT_SUMMARY_TABLE}"
+      credit-summary: ${DYNAMODB_CREDIT_SUMMARY_TABLE}
 management:
   endpoints:
     web:
       exposure:
-        include: "health,prometheus"
+        include: health,prometheus
   endpoint:
     health:
       probes:
         enabled: true
 cors:
-  allowed-origins: "http://localhost:4200,http://localhost:8080"
+  allowed-origins: http://localhost:4200,http://localhost:8080
 app:
   paths:
     credit-summary:
-      summary: "/api/v1/report"
+      summary: /report/api/v1/report
 jwt:
-  secret: "${JWT_SECRET}"
+  secret: ${JWT_SECRET}
 logging:
   level:
-    com.crediya: "${LOG_LEVEL:INFO}"
+    com.crediya: ${LOG_LEVEL:INFO}
 entrypoint:
   sqs:
     credit-approved:
