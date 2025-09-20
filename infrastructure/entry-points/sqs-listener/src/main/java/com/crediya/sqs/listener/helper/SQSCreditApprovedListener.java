@@ -1,16 +1,20 @@
 package com.crediya.sqs.listener.helper;
 
 import com.crediya.sqs.listener.config.SQSCreditApprovedProperties;
+import jakarta.annotation.PreDestroy;
 import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Scheduler;
 import reactor.core.scheduler.Schedulers;
+import reactor.util.retry.Retry;
 import software.amazon.awssdk.services.sqs.SqsAsyncClient;
 import software.amazon.awssdk.services.sqs.model.DeleteMessageRequest;
 import software.amazon.awssdk.services.sqs.model.Message;
 import software.amazon.awssdk.services.sqs.model.ReceiveMessageRequest;
 
+import java.time.Duration;
 import java.util.function.Function;
 
 @Slf4j
@@ -20,13 +24,20 @@ public class SQSCreditApprovedListener {
     private final SQSCreditApprovedProperties properties;
     private final Function<Message, Mono<Void>> processor;
     private String operation;
+    private Scheduler scheduler;
     
     private static final String OPERATION_NAME = "SQSCreditApprovedListener";
 
     public SQSCreditApprovedListener start() {
         this.operation = "MessageFrom:" + properties.queueUrl();
+        this.scheduler = Schedulers.newBoundedElastic(
+            properties.numberOfThreads(),
+            Integer.MAX_VALUE,
+            "sqs-listener"
+        );
+        
         for (var i = 0; i < properties.numberOfThreads(); i++) {
-            listenRetryRepeat().subscribeOn(Schedulers.boundedElastic())
+            listenRetryRepeat().subscribeOn(scheduler)
                .subscribe();
         }
         return this;
@@ -34,8 +45,12 @@ public class SQSCreditApprovedListener {
 
     private Flux<Void> listenRetryRepeat() {
         return listen()
-                .doOnError(e -> log.error("Error listening sqs queue", e))
-                .repeat();
+            .retryWhen(Retry.backoff(Long.MAX_VALUE, Duration.ofSeconds(5))
+                .maxBackoff(Duration.ofMinutes(1))
+                .doBeforeRetry(rs -> log.warn("Retrying after error: {}", rs.failure().getMessage()))
+            )
+            .doOnError(e -> log.error("Error listening sqs queue", e))
+            .repeat();
     }
 
     private Flux<Void> listen() {
@@ -76,5 +91,13 @@ public class SQSCreditApprovedListener {
                 .queueUrl(properties.queueUrl())
                 .receiptHandle(receiptHandle)
                 .build();
+    }
+    
+    @PreDestroy
+    public void shutdown() {
+        if (scheduler != null) {
+            log.info("Shutting down SQS listener scheduler...");
+            scheduler.dispose();
+        }
     }
 }
