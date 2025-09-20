@@ -1,10 +1,8 @@
-package com.crediya.sqs.listener.config;
+package com.crediya.sqs.sender.config;
 
-import com.crediya.sqs.listener.helper.SQSCreditApprovedListener;
-import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import reactor.core.publisher.Mono;
 import software.amazon.awssdk.auth.credentials.AwsCredentialsProviderChain;
 import software.amazon.awssdk.auth.credentials.ContainerCredentialsProvider;
 import software.amazon.awssdk.auth.credentials.EnvironmentVariableCredentialsProvider;
@@ -15,31 +13,15 @@ import software.amazon.awssdk.auth.credentials.WebIdentityTokenFileCredentialsPr
 import software.amazon.awssdk.metrics.MetricPublisher;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.sqs.SqsAsyncClient;
-import software.amazon.awssdk.services.sqs.model.Message;
 
 import java.net.URI;
-import java.util.function.Function;
 
 @Configuration
-public class SQSCreditApprovedConfig {
+@ConditionalOnMissingBean(SqsAsyncClient.class)
+public class SQSSenderConfig {
 
-    @Bean
-    public SQSCreditApprovedListener sqsListener(
-            @Qualifier("sqsListenerClient")
-            SqsAsyncClient client,
-            SQSCreditApprovedProperties properties,
-            Function<Message, Mono<Void>> fn
-    ) {
-        return SQSCreditApprovedListener.builder()
-                .client(client)
-                .properties(properties)
-                .processor(fn)
-                .build()
-                .start();
-    }
-
-    @Bean(name = "sqsListenerClient")
-    public SqsAsyncClient configSqs(SQSCreditApprovedProperties properties, MetricPublisher publisher) {
+    @Bean(name = "sqsSenderClient")
+    public SqsAsyncClient configSqs(SQSSenderProperties properties, MetricPublisher publisher) {
         return SqsAsyncClient.builder()
                 .endpointOverride(resolveEndpoint(properties))
                 .region(Region.of(properties.region()))
@@ -59,7 +41,7 @@ public class SQSCreditApprovedConfig {
                 .build();
     }
 
-    protected URI resolveEndpoint(SQSCreditApprovedProperties properties) {
+    private URI resolveEndpoint(SQSSenderProperties properties) {
         if (properties.endpoint() != null) {
             return URI.create(properties.endpoint());
         }

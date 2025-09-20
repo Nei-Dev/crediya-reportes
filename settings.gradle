@@ -30,3 +30,7 @@ include ':token-service'
 project(':token-service').projectDir = file('./infrastructure/driven-adapters/token-service')
 include ':sqs-listener'
 project(':sqs-listener').projectDir = file('./infrastructure/entry-points/sqs-listener')
+include ':daily-report-scheduler'
+project(':daily-report-scheduler').projectDir = file('./infrastructure/entry-points/daily-report-scheduler')
+include ':sqs-sender'
+project(':sqs-sender').projectDir = file('./infrastructure/driven-adapters/sqs-sender')

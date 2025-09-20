@@ -39,3 +39,12 @@ entrypoint:
       maxNumberOfMessages: 10
       visibilityTimeoutSeconds: 10
       numberOfThreads: 1
+  scheduler:
+    pool-size: 1
+    wait-terminate-seconds: 30
+    jobs:
+      cron-daily-report: ${CRON_DAILY_REPORT}
+adapter:
+  sqs:
+    region: ${SQS_SCHEDULED_REPORT_REGION}
+    queueUrl: ${SQS_SCHEDULED_REPORT_QUEUE_URL}
